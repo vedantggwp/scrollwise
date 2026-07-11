@@ -1,0 +1,13 @@
+Here is the grounded response requested:
+
+{
+  "answer": "The passage describes attention as a way to model dependencies.",
+  "citations": [
+    {
+      "chunkRef": "attention:3:0-410",
+      "quote": "modeling of dependencies"
+    }
+  ]
+}
+
+I have kept the answer concise.
