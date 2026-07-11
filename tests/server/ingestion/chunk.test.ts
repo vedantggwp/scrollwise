@@ -33,11 +33,14 @@ describe("chunkBook", () => {
       const source = chapterSource(chapter);
       expect(chunk.bookRef).toBe("meditations");
       expect(chunk.rawText).toBe(source.slice(chunk.charOffsets.start, chunk.charOffsets.end));
-      expect(chunk.breadcrumb).toBe([
+      const segments = [
         book.metadata.title,
         chapter.title,
         ...chunk.sectionPath,
-      ].join(" › "));
+      ];
+      expect(chunk.breadcrumb).toBe(segments
+        .filter((segment, index) => index === 0 || segment !== segments[index - 1])
+        .join(" › "));
       expect(chunk.embeddableText).toBe(`${chunk.breadcrumb}\n\n${chunk.rawText}`);
       expect(chunk.tokenCount).toBe(tokenizer.encode(chunk.embeddableText).length);
     }
@@ -58,5 +61,22 @@ describe("chunkBook", () => {
       expect(ratio).toBeGreaterThanOrEqual(0.1);
       expect(ratio).toBeLessThanOrEqual(0.15);
     }
+  }, 15_000);
+
+  it("deduplicates a chapter title repeated as its first section heading", () => {
+    const chunks = chunkBook({
+      metadata: { title: "Example Book", author: "Example Author" },
+      chapters: [{
+        title: "Same Chapter",
+        blocks: [
+          { type: "heading", level: 1, text: "Same Chapter" },
+          { type: "paragraph", text: "A complete paragraph worth preserving." },
+        ],
+      }],
+    }, { bookRef: "example", minTokens: 1 });
+
+    expect(chunks).toHaveLength(1);
+    expect(chunks[0].sectionPath).toEqual(["Same Chapter"]);
+    expect(chunks[0].breadcrumb).toBe("Example Book › Same Chapter");
   });
 });

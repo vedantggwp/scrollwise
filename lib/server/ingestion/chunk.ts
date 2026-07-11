@@ -86,6 +86,12 @@ function embeddable(breadcrumb: string, rawText: string): string {
   return `${breadcrumb}\n\n${rawText}`;
 }
 
+function breadcrumbFromSegments(segments: string[]): string {
+  return segments
+    .filter((segment, index) => index === 0 || segment !== segments[index - 1])
+    .join(" › ");
+}
+
 function furthestEnd(
   source: string,
   start: number,
@@ -233,7 +239,11 @@ export function chunkBook(book: StructuredBook, options: ChunkOptions): BookChun
     const source = chapterSource(chapter);
     for (const section of sectionsFromChapter(chapter)) {
       const sectionPath = section.path.length > 0 ? section.path : [chapter.title];
-      const breadcrumb = [book.metadata.title, chapter.title, ...sectionPath].join(" › ");
+      const breadcrumb = breadcrumbFromSegments([
+        book.metadata.title,
+        chapter.title,
+        ...sectionPath,
+      ]);
       for (const span of splitSection(source, section, breadcrumb, limits)) {
         const rawText = source.slice(span.start, span.end);
         const embeddableText = embeddable(breadcrumb, rawText);
