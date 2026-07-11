@@ -19,6 +19,20 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Curio v2 tokens. They are only consumed below the .feed2 boundary. */
+@theme {
+  --color-paper: #FFFDF7;
+  --color-ink: #17161A;
+  --color-mut: #6D6A75;
+  --color-book-1: #FFD84D;
+  --color-book-2: #BFE3D0;
+  --color-book-3: #1D4ED8;
+  --color-book-4: #FF8FA3;
+  --color-book-5: #B7A6F5;
+  --color-book-6: #0F766E;
+  --color-hi: #FFD84D;
+}
+
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
@@ -35,4 +49,299 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Feed v2 is intentionally a self-contained, always-light register. */
+.feed2 {
+  --feed2-paper: var(--color-paper);
+  --feed2-ink: var(--color-ink);
+  --feed2-muted: var(--color-mut);
+  min-height: 100vh;
+  background: var(--feed2-paper);
+  color: var(--feed2-ink);
+  font-family: "General Sans", sans-serif;
+}
+
+.feed2 * {
+  box-sizing: border-box;
+}
+
+.feed2 a:focus-visible {
+  outline: 3px solid var(--color-book-3);
+  outline-offset: 3px;
+}
+
+.feed2-page {
+  width: min(100%, 96rem);
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+.feed2-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.feed2-kicker,
+.feed2-tag,
+.feed2-meta {
+  font-family: "General Sans", sans-serif;
+}
+
+.feed2-kicker,
+.feed2-tag {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.feed2-title,
+.feed2-question {
+  font-family: "Clash Display", sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.feed2-title {
+  margin: 0.2rem 0 0;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  line-height: 1;
+}
+
+.feed2-meta {
+  margin: 0;
+  color: var(--feed2-muted);
+  font-size: 0.875rem;
+}
+
+.feed2-masonry {
+  column-count: 2;
+  column-gap: 14px;
+}
+
+.feed2-masonry-item {
+  break-inside: avoid;
+  margin-bottom: 14px;
+  animation: feed2-enter 180ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.feed2-tile,
+.feed2-answer-card {
+  border: 2px solid var(--feed2-ink);
+  border-radius: 16px;
+  box-shadow: 4px 4px 0 var(--feed2-ink);
+}
+
+.feed2-tile {
+  display: block;
+  min-height: 44px;
+  padding: 1rem;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 170ms cubic-bezier(0.2, 0, 0, 1), box-shadow 170ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.feed2-tile:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--feed2-ink);
+}
+
+.feed2-tile--ink {
+  color: var(--feed2-ink);
+}
+
+.feed2-tile--paper {
+  color: var(--feed2-paper);
+}
+
+.feed2-tile--quote {
+  background: var(--feed2-paper);
+  color: var(--feed2-ink);
+}
+
+.feed2-question {
+  margin: 1.1rem 0 1.25rem;
+  font-size: 1.1875rem;
+  line-height: 1.1;
+}
+
+.feed2-hook,
+.feed2-quote,
+.feed2-answer-body,
+.feed2-citation-quote {
+  font-family: "Erode", serif;
+}
+
+.feed2-hook {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.feed2-quote {
+  margin: 1rem 0 1.25rem;
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.2;
+}
+
+.feed2-book-tag {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  min-height: 1.75rem;
+  border: 2px solid var(--feed2-ink);
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  background: var(--feed2-book-color);
+  color: var(--feed2-tag-color);
+  font-family: "General Sans", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.feed2-book-tag--tilted {
+  transform: rotate(-1deg);
+}
+
+.feed2-cover-spine {
+  min-height: 8rem;
+  border: 2px solid currentColor;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.feed2-cover-title {
+  margin: 0.65rem 0 0.4rem;
+  font-family: "Clash Display", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 0.98;
+}
+
+.feed2-cover-author {
+  margin: 0;
+  font-family: "Erode", serif;
+  font-size: 1rem;
+}
+
+.feed2-answer-page {
+  width: min(100%, 48rem);
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+.feed2-back-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--feed2-ink);
+  font-family: "General Sans", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.feed2-answer-card {
+  margin-top: 1rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  background: var(--feed2-paper);
+}
+
+.feed2-answer-question {
+  margin: 0.75rem 0 1.5rem;
+  font-family: "Clash Display", sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.feed2-answer-body {
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.55;
+}
+
+.feed2-citations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 1.75rem;
+}
+
+.feed2-citation-chip {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  border: 2px solid var(--feed2-ink);
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem;
+  background: var(--feed2-ink);
+  color: var(--color-hi);
+  font-family: "General Sans", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-decoration: none;
+  transition: transform 170ms cubic-bezier(0.2, 0, 0, 1), box-shadow 170ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.feed2-citation-chip:active {
+  transform: translate(2px, 2px);
+}
+
+@keyframes feed2-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .feed2-page {
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  .feed2-masonry {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1280px) {
+  .feed2-masonry {
+    column-count: 4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feed2-masonry-item {
+    animation-name: feed2-fade;
+  }
+
+  .feed2-tile,
+  .feed2-citation-chip {
+    transition-duration: 1ms;
+  }
+}
+
+@keyframes feed2-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
