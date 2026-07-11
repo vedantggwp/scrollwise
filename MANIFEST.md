@@ -2,6 +2,7 @@
 
 ## Key Files
 - `docs/V2_BRIEF.md` — Locked product + architecture brief for Scrollwise v2 (question-feed RAG layer); supersedes Silo 4 in NEXT_STEPS.md
+- `docs/ARCHITECTURE.md` — System diagram (mermaid), module status map, design invariants
 - `lib/server/ingestion/` — Server-side EPUB/PDF → chapters → 400-512-token chunks with breadcrumbs (fflate/linkedom/unpdf/js-tiktoken)
 - `lib/server/scoring/` — Chunk quality scoring, chapter-balanced quote-tile selection, sentence-aligned display excerpts
 - `lib/server/generation/` — Zod schemas, question/answer prompt builders (voice constants in prompts.ts), hardened model-JSON parsing
