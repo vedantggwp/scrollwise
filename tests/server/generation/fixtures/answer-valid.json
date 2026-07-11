@@ -1,0 +1,9 @@
+{
+  "answer": "Attention filters which information can influence the next representation.",
+  "citations": [
+    {
+      "chunkRef": "attention:3:0-410",
+      "quote": "Attention allows modeling of dependencies"
+    }
+  ]
+}

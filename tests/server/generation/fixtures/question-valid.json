@@ -1,0 +1,9 @@
+{
+  "questions": [
+    {
+      "question": "Why can directing attention change how a difficult moment feels?",
+      "chunkRefs": ["attention:2:120-540"],
+      "hook": "It connects attention to the reader's goal of staying calm under pressure."
+    }
+  ]
+}
