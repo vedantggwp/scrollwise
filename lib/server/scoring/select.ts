@@ -1,8 +1,10 @@
 import type { BookChunk } from "../ingestion/types";
+import { extractExcerpt, type QuoteTile } from "./excerpt";
 import { scoreChunk } from "./score";
 
 interface ScoredChunk {
   chunk: BookChunk;
+  excerpt: string;
   score: number;
   inputIndex: number;
 }
@@ -32,24 +34,32 @@ function compareChunks(left: ScoredChunk, right: ScoredChunk): number {
  * Select the strongest quote candidates while capping representation per chapter.
  * May return fewer than requested when uneven chapter inventories exhaust the cap.
  */
-export function selectQuoteTiles(chunks: readonly BookChunk[], count: number): BookChunk[] {
+export function selectQuoteTiles(chunks: readonly BookChunk[], count: number): QuoteTile[] {
   const requested = Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0;
   if (requested === 0 || chunks.length === 0) return [];
 
-  const chapterCount = new Set(chunks.map(chapterKey)).size;
-  const perChapterLimit = Math.ceil(requested / chapterCount);
-  const selected: BookChunk[] = [];
-  const selectedByChapter = new Map<string, number>();
   const ranked = chunks
-    .map((chunk, inputIndex) => ({ chunk, inputIndex, score: scoreChunk(chunk) }))
+    .map((chunk, inputIndex) => ({
+      chunk,
+      inputIndex,
+      score: scoreChunk(chunk),
+      excerpt: extractExcerpt(chunk),
+    }))
+    .filter((item) => item.excerpt.length > 0)
     .sort(compareChunks);
+  if (ranked.length === 0) return [];
+
+  const chapterCount = new Set(ranked.map((item) => chapterKey(item.chunk))).size;
+  const perChapterLimit = Math.ceil(requested / chapterCount);
+  const selected: QuoteTile[] = [];
+  const selectedByChapter = new Map<string, number>();
 
   for (const item of ranked) {
     if (selected.length === requested) break;
     const key = chapterKey(item.chunk);
     const used = selectedByChapter.get(key) ?? 0;
     if (used >= perChapterLimit) continue;
-    selected.push(item.chunk);
+    selected.push({ chunk: item.chunk, excerpt: item.excerpt });
     selectedByChapter.set(key, used + 1);
   }
   return selected;

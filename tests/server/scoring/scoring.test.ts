@@ -4,7 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { chunkBook, parseEpub, type BookChunk } from "@/lib/server/ingestion";
-import { scoreChunk, selectQuoteTiles } from "@/lib/server/scoring";
+import { extractExcerpt, scoreChunk, selectQuoteTiles } from "@/lib/server/scoring";
 
 function makeChunk(rawText: string, overrides: Partial<BookChunk> = {}): BookChunk {
   return {
@@ -54,6 +54,41 @@ describe("scoreChunk", () => {
   });
 });
 
+describe("extractExcerpt", () => {
+  it("drops boundary fragments and chooses complete contiguous sentences", () => {
+    const chunk = makeChunk(
+      "continuation from an earlier sentence ends here. Wisdom begins when we stop "
+      + "pretending that every answer is already known. The mind becomes freer when "
+      + "it can examine an uncomfortable truth without immediately turning away. "
+      + "This trailing fragment has no ending",
+    );
+
+    const excerpt = extractExcerpt(chunk);
+    expect(excerpt).toMatch(/^(?:\p{Lu}|["'“‘])/u);
+    expect(excerpt).toMatch(/[.!?]["'’”]?$/u);
+    expect(excerpt).not.toContain("continuation from an earlier sentence");
+    expect(excerpt).not.toContain("This trailing fragment");
+    expect(excerpt.length).toBeGreaterThanOrEqual(120);
+    expect(excerpt.length).toBeLessThanOrEqual(320);
+  });
+
+  it("returns no display text when a chunk contains no complete sentence", () => {
+    expect(extractExcerpt(makeChunk("an incomplete boundary fragment only"))).toBe("");
+  });
+
+  it("rejects a capitalized leading overlap fragment", () => {
+    const chunk = makeChunk(
+      "Marcus was named earlier in the sentence. A complete sentence begins safely here "
+      + "and carries enough context to stand independently. Another complete sentence "
+      + "finishes the thought for a reader.",
+      { charOffsets: { start: 500, end: 690 } },
+    );
+
+    expect(extractExcerpt(chunk)).not.toContain("Marcus was named earlier");
+    expect(extractExcerpt(chunk)).toMatch(/^A complete sentence/);
+  });
+});
+
 describe("selectQuoteTiles", () => {
   it("breaks equal-score ties by canonical chunk position", () => {
     const equalChunks = [2, 0, 1].map((chapterIndex) => makeChunk(
@@ -66,7 +101,7 @@ describe("selectQuoteTiles", () => {
       },
     ));
 
-    expect(selectQuoteTiles(equalChunks, 3).map((chunk) => chunk.chapterIndex))
+    expect(selectQuoteTiles(equalChunks, 3).map((tile) => tile.chunk.chapterIndex))
       .toEqual([0, 1, 2]);
   });
 
@@ -100,8 +135,13 @@ describe("selectQuoteTiles", () => {
     expect(second).toEqual(first);
     expect(reversed).toEqual(first);
     const selectedCounts = new Map<number, number>();
-    for (const chunk of first) {
-      selectedCounts.set(chunk.chapterIndex, (selectedCounts.get(chunk.chapterIndex) ?? 0) + 1);
+    for (const tile of first) {
+      selectedCounts.set(
+        tile.chunk.chapterIndex,
+        (selectedCounts.get(tile.chunk.chapterIndex) ?? 0) + 1,
+      );
+      expect(tile.excerpt).toMatch(/^(?:\p{Lu}|["'“‘])/u);
+      expect(tile.excerpt).toMatch(/[.!?]["'’”]?$/u);
     }
     expect(Math.max(...selectedCounts.values())).toBeLessThanOrEqual(perChapterLimit);
   }, 15_000);
