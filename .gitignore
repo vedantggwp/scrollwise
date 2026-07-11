@@ -22,6 +22,9 @@
 # production
 /build
 
+# internal planning (not part of the public repo)
+/.internal/
+
 # misc
 .DS_Store
 *.pem
