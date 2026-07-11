@@ -174,12 +174,12 @@ export const feedFixtures: FeedFixture[] = [
   }, [{ chunk: meditationsMorning, quote: meditationsMorning.rawText }]),
   { kind: "cover", id: "cover-human-machine", book: mockBooks.bennettTalks, note: "For the moments when motivation is not the point." },
   questionFixture("attention-is-work", mockBooks.bennettTalks, generatedQuestions.questions[4], {
-    answer: "Attention is work because it gives one thing the right to exclude the rest. Bennett treats it as a faculty, which means it can be practised in small, repeatable acts — not waited for as a lucky feeling.",
+    answer: "Attention is work because it gives one thing the right to exclude the rest. Bennett treats it as a faculty, which means it can be practised in small, repeatable acts, not waited for as a lucky feeling.",
     citations: [{ chunkRef: "bennett-talks:attention:310", quote: bennettAttention.rawText }],
   }, [{ chunk: bennettAttention, quote: bennettAttention.rawText }]),
   { kind: "quote", id: "quote-retreat", book: mockBooks.meditations, chunk: meditationsRetreat },
   questionFixture("current-isnt-original", mockBooks.bennettEssays, generatedQuestions.questions[5], {
-    answer: "Being current can turn into a reflex: reaching for what everyone has just agreed matters. Bennett’s joke points toward a slower test — whether an idea still has life after the moment that made it fashionable has passed.",
+    answer: "Being current can turn into a reflex: reaching for what everyone has just agreed matters. Bennett’s joke points toward a slower test: whether an idea still has life after the moment that made it fashionable has passed.",
     citations: [{ chunkRef: "bennett-essays:modernity:560", quote: bennettModern.rawText }],
   }, [{ chunk: bennettModern, quote: bennettModern.rawText }]),
   questionFixture("morning-control", mockBooks.meditationsTwo, generatedQuestions.questions[6], {

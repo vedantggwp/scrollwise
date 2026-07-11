@@ -17,7 +17,7 @@ export function QuoteTile({ item }: { item: QuoteFixture }) {
     >
       <span className="feed2-book-tag">{item.book.tagLabel}</span>
       <blockquote className="feed2-quote">“{item.chunk.rawText}”</blockquote>
-      <p className="feed2-quote-attribution">— {item.book.author}</p>
+      <p className="feed2-quote-attribution">{item.book.author}</p>
     </Link>
   );
 }
