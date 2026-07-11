@@ -52,17 +52,33 @@ describe("feed2 components", () => {
     expect(screen.getByLabelText("Curiosity feed").children).toHaveLength(feedFixtures.length);
   });
 
-  it("renders answer citations as reader links", () => {
+  it("renders cited passages above short reader-link chips", () => {
     const twoCitationQuestion = feedFixtures.find(
       (item): item is QuestionFixture => item.kind === "question" && item.citations.length === 2,
     )!;
     render(<AnswerCard item={twoCitationQuestion} />);
+    const passages = screen.getByLabelText("Supporting passages");
+    expect(passages.querySelectorAll("blockquote")).toHaveLength(2);
+    expect(passages).toHaveTextContent(twoCitationQuestion.citations[0].quote);
+
     const citations = screen.getAllByRole("link", { name: /read citation in/i });
     expect(citations).toHaveLength(2);
     const citation = citations[0];
+    expect(citation).toHaveTextContent(twoCitationQuestion.citations[0].chunk.breadcrumb);
+    expect(citation).not.toHaveTextContent(twoCitationQuestion.citations[0].quote);
     expect(citation).toHaveAttribute(
       "href",
       `/reader/${twoCitationQuestion.citations[0].chunk.bookRef}?loc=${twoCitationQuestion.citations[0].chunk.charOffsets.start}`,
     );
+    expect(passages.compareDocumentPosition(citation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("uses short, non-wrapping display labels for book tags", () => {
+    const longTitleQuestion = feedFixtures.find(
+      (item): item is QuestionFixture => item.kind === "question" && item.book.id === "twenty-four-hours",
+    )!;
+    render(<QuestionTile item={longTitleQuestion} />);
+    expect(screen.getByText("24 Hours a Day")).toHaveClass("feed2-book-tag");
+    expect(screen.queryByText("How to Live on 24 Hours a Day")).not.toBeInTheDocument();
   });
 });

@@ -26,15 +26,16 @@ export function bookTagTextColor(index: number): "var(--color-ink)" | "var(--col
 export interface MockBook extends BookMetadata {
   id: string;
   colorIndex: number;
+  tagLabel: string;
 }
 
 export const mockBooks = {
-  meditations: { id: "meditations", title: "Meditations", author: "Marcus Aurelius", colorIndex: 0 },
-  twentyFourHours: { id: "twenty-four-hours", title: "How to Live on 24 Hours a Day", author: "Arnold Bennett", colorIndex: 1 },
-  bennettEssays: { id: "bennett-essays", title: "Literary Taste", author: "Arnold Bennett", colorIndex: 2 },
-  meditationsTwo: { id: "meditations-book-two", title: "Meditations: Book II", author: "Marcus Aurelius", colorIndex: 3 },
-  bennettTalks: { id: "bennett-talks", title: "The Human Machine", author: "Arnold Bennett", colorIndex: 4 },
-  meditationsSix: { id: "meditations-book-six", title: "Meditations: Book VI", author: "Marcus Aurelius", colorIndex: 5 },
+  meditations: { id: "meditations", title: "Meditations", tagLabel: "Meditations", author: "Marcus Aurelius", colorIndex: 0 },
+  twentyFourHours: { id: "twenty-four-hours", title: "How to Live on 24 Hours a Day", tagLabel: "24 Hours a Day", author: "Arnold Bennett", colorIndex: 1 },
+  bennettEssays: { id: "bennett-essays", title: "Literary Taste", tagLabel: "Literary Taste", author: "Arnold Bennett", colorIndex: 2 },
+  meditationsTwo: { id: "meditations-book-two", title: "Meditations: Book II", tagLabel: "Meditations · II", author: "Marcus Aurelius", colorIndex: 3 },
+  bennettTalks: { id: "bennett-talks", title: "The Human Machine", tagLabel: "Human Machine", author: "Arnold Bennett", colorIndex: 4 },
+  meditationsSix: { id: "meditations-book-six", title: "Meditations: Book VI", tagLabel: "Meditations · VI", author: "Marcus Aurelius", colorIndex: 5 },
 } as const satisfies Record<string, MockBook>;
 
 function chunk(
@@ -48,7 +49,7 @@ function chunk(
     bookRef: book.id,
     chapterIndex,
     sectionPath: [section],
-    breadcrumb: `${book.title} › ${section}`,
+    breadcrumb: `${book.tagLabel} › ${section}`,
     rawText,
     embeddableText: `${book.title} › ${section}\n${rawText}`,
     charOffsets: { start, end: start + rawText.length },

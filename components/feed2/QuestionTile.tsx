@@ -21,7 +21,7 @@ export function QuestionTile({ item }: { item: QuestionFixture }) {
       style={style}
       aria-label={`Read answer: ${item.generated.question}`}
     >
-      <span className="feed2-book-tag feed2-book-tag--tilted">{item.book.title}</span>
+      <span className="feed2-book-tag">{item.book.tagLabel}</span>
       <h2 className="feed2-question">{item.generated.question}</h2>
       <p className="feed2-hook">{item.generated.hook}</p>
     </Link>

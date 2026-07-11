@@ -61,36 +61,31 @@ body {
   color: var(--feed2-ink);
   font-family: "General Sans", sans-serif;
 }
-
 .feed2 * {
   box-sizing: border-box;
 }
-
 .feed2 a:focus-visible {
-  outline: 3px solid var(--color-book-3);
-  outline-offset: 3px;
+  outline: 3px solid var(--feed2-ink);
+  outline-offset: 4px;
 }
-
 .feed2-page {
   width: min(100%, 96rem);
   margin: 0 auto;
   padding: 2rem 1rem 3rem;
 }
-
 .feed2-header {
   display: flex;
   align-items: end;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  padding-inline: 0.125rem;
 }
-
 .feed2-kicker,
 .feed2-tag,
 .feed2-meta {
   font-family: "General Sans", sans-serif;
 }
-
 .feed2-kicker,
 .feed2-tag {
   margin: 0;
@@ -99,7 +94,6 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-
 .feed2-title,
 .feed2-question {
   font-family: "Clash Display", sans-serif;
@@ -107,37 +101,42 @@ body {
   letter-spacing: -0.01em;
   text-wrap: balance;
 }
-
 .feed2-title {
-  margin: 0.2rem 0 0;
+  margin: 0.25rem 0 0;
   font-size: clamp(2rem, 5vw, 2.5rem);
   line-height: 1;
 }
-
 .feed2-meta {
   margin: 0;
   color: var(--feed2-muted);
   font-size: 0.875rem;
 }
-
+.feed2-header > .feed2-meta {
+  max-width: 11rem;
+  padding-bottom: 0.15rem;
+  text-align: right;
+}
 .feed2-masonry {
   column-count: 2;
   column-gap: 14px;
 }
-
 .feed2-masonry-item {
   break-inside: avoid;
   margin-bottom: 14px;
   animation: feed2-enter 180ms cubic-bezier(0.2, 0, 0, 1) both;
 }
-
+.feed2-masonry-item:nth-child(odd) .feed2-book-tag {
+  transform: rotate(-1deg);
+}
+.feed2-masonry-item:nth-child(even) .feed2-book-tag {
+  transform: rotate(1deg);
+}
 .feed2-tile,
 .feed2-answer-card {
   border: 2px solid var(--feed2-ink);
   border-radius: 16px;
   box-shadow: 4px 4px 0 var(--feed2-ink);
 }
-
 .feed2-tile {
   display: block;
   min-height: 44px;
@@ -146,51 +145,45 @@ body {
   text-decoration: none;
   transition: transform 170ms cubic-bezier(0.2, 0, 0, 1), box-shadow 170ms cubic-bezier(0.2, 0, 0, 1);
 }
-
+.feed2-tile:focus-visible {
+  box-shadow: 4px 4px 0 var(--feed2-ink);
+}
 .feed2-tile:active {
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0 var(--feed2-ink);
 }
-
 .feed2-tile--ink {
   color: var(--feed2-ink);
 }
-
 .feed2-tile--paper {
   color: var(--feed2-paper);
 }
-
 .feed2-tile--quote {
   background: var(--feed2-paper);
   color: var(--feed2-ink);
 }
-
 .feed2-question {
-  margin: 1.1rem 0 1.25rem;
+  margin: 1.15rem 0 1.35rem;
   font-size: 1.1875rem;
   line-height: 1.1;
 }
-
 .feed2-hook,
 .feed2-quote,
 .feed2-answer-body,
 .feed2-citation-quote {
   font-family: "Erode", serif;
 }
-
 .feed2-hook {
   margin: 0;
   font-size: 1rem;
   line-height: 1.35;
 }
-
 .feed2-quote {
-  margin: 1rem 0 1.25rem;
+  margin: 1.1rem 0 1.35rem;
   font-size: 1.25rem;
   font-style: italic;
   line-height: 1.2;
 }
-
 .feed2-book-tag {
   display: inline-flex;
   max-width: 100%;
@@ -207,39 +200,38 @@ body {
   letter-spacing: 0.12em;
   line-height: 1;
   text-transform: uppercase;
+  white-space: nowrap;
 }
-
-.feed2-book-tag--tilted {
-  transform: rotate(-1deg);
-}
-
-.feed2-cover-spine {
-  min-height: 8rem;
-  border: 2px solid currentColor;
-  border-radius: 8px;
-  padding: 1rem;
-}
-
 .feed2-cover-title {
-  margin: 0.65rem 0 0.4rem;
+  margin: 1.35rem 0 0.6rem;
   font-family: "Clash Display", sans-serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 0.98;
+  font-size: clamp(1.75rem, 5vw, 2.35rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 0.92;
+  text-wrap: balance;
 }
-
 .feed2-cover-author {
+  margin: 0 0 1.5rem;
+  font-family: "General Sans", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.feed2-quote-attribution {
   margin: 0;
-  font-family: "Erode", serif;
-  font-size: 1rem;
+  color: var(--feed2-muted);
+  font-family: "General Sans", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
-
 .feed2-answer-page {
-  width: min(100%, 48rem);
+  width: min(100%, 46rem);
   margin: 0 auto;
-  padding: 2rem 1rem 3rem;
+  padding: clamp(1.5rem, 4vw, 3rem) 1rem 4rem;
 }
-
 .feed2-back-link {
   display: inline-flex;
   min-height: 44px;
@@ -251,15 +243,17 @@ body {
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
-
+.feed2-back-link:active {
+  transform: translate(1px, 1px);
+}
 .feed2-answer-card {
-  margin-top: 1rem;
-  padding: clamp(1.25rem, 4vw, 2rem);
+  margin-top: 1.25rem;
+  padding: clamp(1.35rem, 5vw, 2.5rem);
   background: var(--feed2-paper);
 }
-
 .feed2-answer-question {
-  margin: 0.75rem 0 1.5rem;
+  max-width: 18ch;
+  margin: 0.8rem 0 1.75rem;
   font-family: "Clash Display", sans-serif;
   font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 600;
@@ -267,20 +261,46 @@ body {
   line-height: 1.05;
   text-wrap: balance;
 }
-
 .feed2-answer-body {
+  max-width: 65ch;
   margin: 0;
   font-size: 1.125rem;
   line-height: 1.55;
 }
-
+.feed2-cited-passages {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.feed2-cited-passage {
+  margin: 0;
+  border-left: 3px solid var(--feed2-ink);
+  padding: 0.1rem 0 0.1rem 0.875rem;
+  font-family: "Erode", serif;
+  font-size: 0.9rem;
+  font-style: italic;
+  line-height: 1.45;
+}
+.feed2-cited-passage p {
+  margin: 0;
+}
+.feed2-cited-passage cite {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--feed2-muted);
+  font-family: "General Sans", sans-serif;
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .feed2-citations {
   display: flex;
   flex-wrap: wrap;
   gap: 0.625rem;
-  margin-top: 1.75rem;
+  margin-top: 1.25rem;
 }
-
 .feed2-citation-chip {
   display: inline-flex;
   min-height: 44px;
@@ -296,13 +316,36 @@ body {
   letter-spacing: 0.04em;
   line-height: 1.1;
   text-decoration: none;
+  white-space: nowrap;
   transition: transform 170ms cubic-bezier(0.2, 0, 0, 1), box-shadow 170ms cubic-bezier(0.2, 0, 0, 1);
 }
-
 .feed2-citation-chip:active {
   transform: translate(2px, 2px);
 }
-
+@media (max-width: 420px) {
+  .feed2-page {
+    padding-inline: 0.75rem;
+  }
+  .feed2-header {
+    align-items: start;
+  }
+  .feed2-header > .feed2-meta {
+    max-width: 8rem;
+    padding-top: 1.15rem;
+  }
+  .feed2-tile {
+    padding: 0.85rem;
+  }
+  .feed2-book-tag {
+    max-width: none;
+    min-height: 1.6rem;
+    padding-inline: 0.45rem;
+    font-size: 0.625rem;
+  }
+  .feed2-cover-title {
+    font-size: 1.65rem;
+  }
+}
 @keyframes feed2-enter {
   from {
     opacity: 0;
@@ -313,34 +356,29 @@ body {
     transform: translateY(0);
   }
 }
-
 @media (min-width: 768px) {
   .feed2-page {
     padding: 2.5rem 1.5rem 4rem;
   }
-
   .feed2-masonry {
     column-count: 3;
   }
 }
-
 @media (min-width: 1280px) {
   .feed2-masonry {
     column-count: 4;
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
   .feed2-masonry-item {
     animation-name: feed2-fade;
   }
-
   .feed2-tile,
-  .feed2-citation-chip {
+  .feed2-citation-chip,
+  .feed2-back-link {
     transition-duration: 1ms;
   }
 }
-
 @keyframes feed2-fade {
   from { opacity: 0; }
   to { opacity: 1; }
