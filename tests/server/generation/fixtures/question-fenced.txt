@@ -1,0 +1,11 @@
+```json
+{
+  "questions": [
+    {
+      "question": "What makes attention selective?",
+      "chunkRefs": ["attention:3:0-410"],
+      "hook": "It clarifies why focus is limited."
+    }
+  ]
+}
+```
