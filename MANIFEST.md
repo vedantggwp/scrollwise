@@ -7,6 +7,7 @@
 - `lib/server/ingestion/` — Server-side EPUB/PDF → chapters → 400-512-token chunks with breadcrumbs (fflate/linkedom/unpdf/js-tiktoken)
 - `lib/server/scoring/` — Chunk quality scoring, chapter-balanced quote-tile selection, sentence-aligned display excerpts
 - `lib/server/generation/` — Zod schemas, question/answer prompt builders (voice constants in prompts.ts), hardened model-JSON parsing
+- `supabase/migrations/` — v2 schema: books/chunks (halfvec + FTS + HNSW), questions/answers/citations, profiles, saves, RLS, `hybrid_search` RRF function
 - `tests/fixtures/` — EPUB/PDF ingestion-test fixtures; provenance and licenses in `tests/fixtures/README.md`
 - `docs/STATUS.md` — Single source of truth for what v1 implements
 - `docs/NEXT_STEPS.md` — v1 work silos (all v1 silos done; Silo 4 superseded by V2_BRIEF)
