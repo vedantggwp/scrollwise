@@ -110,8 +110,8 @@ Browser ──► Next.js (Vercel, Fluid compute)
 pipeline (above); batched book-first persona-conditioned question generation; answer-on-tap
 with citations deep-linking to reader (`?loc=`); masonry feed with mixed tiles (ratio lives
 in `lib/feed/discovery.ts`); editable free-text life-context that re-conditions the feed;
-seeded public-domain demo corpus (Meditations, Seneca, Tao Te Ching, Walden) + pre-filled
-persona; README with architecture diagram + thesis (a deliverable, not an afterthought).
+seeded public-domain demo corpus (mixed curiosity registers per the addendum below; exact
+list chosen at seed time) + pre-filled persona; README with architecture diagram + thesis (a deliverable, not an afterthought).
 
 **OUT (v2.1+):** ask-your-own-question; boards-per-goal (simple save survives from v1);
 any explicit learning mechanics; behavior-inferred goals; anything social.

@@ -6,13 +6,13 @@ import { describe, expect, it } from "vitest";
 import { parsePdf } from "@/lib/server/ingestion/pdf";
 import { IngestionError } from "@/lib/server/ingestion/types";
 
-const fixture = path.join(process.cwd(), "tests", "fixtures", "attention.pdf");
+const fixture = path.join(process.cwd(), "tests", "fixtures", "meditations-notes.pdf");
 
 describe("parsePdf", () => {
   it("parses pages into detected headings and paragraphs", async () => {
     const book = await parsePdf(await readFile(fixture));
 
-    expect(book.metadata.title).toContain("Attention");
+    expect(book.metadata.title).toContain("Meditations");
     expect(book.chapters.length).toBeGreaterThan(3);
     expect(book.chapters.every((chapter, index) => chapter.pageNumber === index + 1)).toBe(true);
     expect(book.chapters.flatMap((chapter) => chapter.blocks)

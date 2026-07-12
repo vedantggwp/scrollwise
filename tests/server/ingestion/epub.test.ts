@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
+import { strToU8, zipSync } from "fflate";
 import { describe, expect, it } from "vitest";
 
 import { parseEpub } from "@/lib/server/ingestion/epub";
@@ -35,5 +36,17 @@ describe("parseEpub", () => {
     } catch (error) {
       expect(error).toMatchObject({ format: "epub", code: "INVALID_ARCHIVE" });
     }
+  });
+
+  it("splits TOC chapters when an EPUB2 anchor is nested inside a heading", () => {
+    const epub = zipSync({
+      "META-INF/container.xml": strToU8(`<?xml version="1.0"?><container><rootfiles><rootfile full-path="OEBPS/book.opf"/></rootfiles></container>`),
+      "OEBPS/book.opf": strToU8(`<?xml version="1.0"?><package><metadata><title>Anchor book</title><creator>Author</creator></metadata><manifest><item id="chapter" href="chapter.xhtml" media-type="application/xhtml+xml"/><item id="toc" href="toc.ncx" media-type="application/x-dtbncx+xml"/></manifest><spine toc="toc"><itemref idref="chapter"/></spine></package>`),
+      "OEBPS/toc.ncx": strToU8(`<?xml version="1.0"?><ncx><navMap><navPoint><navLabel><text>Chapter One</text></navLabel><content src="chapter.xhtml#c1"/></navPoint><navPoint><navLabel><text>Chapter Two</text></navLabel><content src="chapter.xhtml#c2"/></navPoint></navMap></ncx>`),
+      "OEBPS/chapter.xhtml": strToU8(`<html><body><h2><a name="c1"></a>Chapter One</h2><p>First chapter text.</p><h2><a id="c2"></a>Chapter Two</h2><p>Second chapter text.</p></body></html>`),
+    });
+
+    expect(parseEpub(epub).chapters.map((chapter) => chapter.title))
+      .toEqual(["Chapter One", "Chapter Two"]);
   });
 });

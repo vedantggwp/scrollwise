@@ -87,12 +87,32 @@ describe("extractExcerpt", () => {
     expect(extractExcerpt(chunk)).not.toContain("Marcus was named earlier");
     expect(extractExcerpt(chunk)).toMatch(/^A complete sentence/);
   });
+
+  it("keeps honorifics with the sentence they introduce", () => {
+    const excerpt = extractExcerpt(makeChunk(
+      "She extended her gloved hand toward Mr. Aldren, who accepted it with a grave bow "
+      + "and spoke with the careful courtesy that made every ordinary exchange feel ceremonial. "
+      + "The room grew quieter as the conversation moved on to matters no one had expected to discuss.",
+    ));
+
+    expect(excerpt).toContain("gloved hand toward Mr. Aldren");
+    expect(excerpt).not.toMatch(/\b(?:Mr|Mrs|Ms|Dr|St|Prof|Sr|Jr|e\.g|i\.e|etc|vs)\.$/i);
+  });
 });
 
 describe("selectQuoteTiles", () => {
+  it("does not select the same excerpt from overlapping Meditations chunks twice", async () => {
+    const epubPath = path.join(process.cwd(), "tests", "fixtures", "meditations.epub");
+    const book = parseEpub(await readFile(epubPath));
+    const tiles = selectQuoteTiles(chunkBook(book, { bookRef: "meditations" }), 40);
+    const normalized = tiles.map((tile) => tile.excerpt.replace(/\s+/g, " ").trim().toLowerCase());
+
+    expect(new Set(normalized).size).toBe(normalized.length);
+  }, 15_000);
+
   it("breaks equal-score ties by canonical chunk position", () => {
     const equalChunks = [2, 0, 1].map((chapterIndex) => makeChunk(
-      "A plain complete sentence offers enough context. Another complete sentence "
+      `${String.fromCharCode(65 + chapterIndex)} plain complete sentence offers enough context. Another complete sentence `
       + "keeps every candidate's heuristic score identical for this selection test.",
       {
         chapterIndex,
@@ -105,7 +125,7 @@ describe("selectQuoteTiles", () => {
       .toEqual([0, 1, 2]);
   });
 
-  it("honors chapter caps when that means returning fewer chunks", () => {
+  it("honors chapter caps and does not use duplicates to fill them", () => {
     const commonText = "A complete thought stands on its own. A second sentence gives it context.";
     const chunks = [
       makeChunk(commonText, { chapterIndex: 0, charOffsets: { start: 0, end: 76 } }),
@@ -114,7 +134,7 @@ describe("selectQuoteTiles", () => {
       makeChunk(commonText, { chapterIndex: 1, charOffsets: { start: 0, end: 76 } }),
     ];
 
-    expect(selectQuoteTiles(chunks, 4)).toHaveLength(3);
+    expect(selectQuoteTiles(chunks, 4)).toHaveLength(2);
     expect(selectQuoteTiles(chunks, 0)).toEqual([]);
     expect(selectQuoteTiles([], 4)).toEqual([]);
   });

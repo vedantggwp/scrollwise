@@ -118,9 +118,17 @@ function chaptersFromDocument(
     });
   };
 
+  const boundaryTitleFor = (element: Element): string | undefined => {
+    for (const candidate of [element, ...element.querySelectorAll("[id], [name]")]) {
+      const title = boundaries.get(candidate.getAttribute("id") ?? "")
+        ?? boundaries.get(candidate.getAttribute("name") ?? "");
+      if (title) return title;
+    }
+    return undefined;
+  };
+
   const walk = (element: Element): void => {
-    const id = element.getAttribute("id");
-    const boundaryTitle = id ? boundaries.get(id) : undefined;
+    const boundaryTitle = boundaryTitleFor(element);
     if (boundaryTitle) {
       flush();
       current = { title: boundaryTitle, blocks: [] };

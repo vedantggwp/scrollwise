@@ -70,6 +70,7 @@ export function parseModelJson<T>(schema: ZodType<T>, rawText: string): ModelJso
   let cursor = 0;
   let invalidJsonMessage: string | undefined;
   let sawCandidate = false;
+  let sawUnterminatedCandidate = false;
 
   while (cursor < text.length) {
     const objectStart = text.indexOf("{", cursor);
@@ -80,10 +81,9 @@ export function parseModelJson<T>(schema: ZodType<T>, rawText: string): ModelJso
     sawCandidate = true;
     const candidate = scanCandidate(text, start);
     if (!candidate.terminated) {
-      return {
-        ok: false,
-        error: { code: "UNTERMINATED_JSON", message: "JSON object or array was not terminated" },
-      };
+      sawUnterminatedCandidate = true;
+      cursor = start + 1;
+      continue;
     }
 
     let parsed: unknown;
@@ -91,12 +91,16 @@ export function parseModelJson<T>(schema: ZodType<T>, rawText: string): ModelJso
       parsed = JSON.parse(candidate.text);
     } catch (error) {
       invalidJsonMessage ??= errorMessage(error);
-      cursor = candidate.end + 1;
+      cursor = start + 1;
       continue;
     }
 
     const validated = schema.safeParse(parsed);
     if (!validated.success) {
+      if (sawUnterminatedCandidate || invalidJsonMessage) {
+        cursor = start + 1;
+        continue;
+      }
       return {
         ok: false,
         error: {
@@ -113,6 +117,12 @@ export function parseModelJson<T>(schema: ZodType<T>, rawText: string): ModelJso
     return {
       ok: false,
       error: { code: "INVALID_JSON", message: invalidJsonMessage },
+    };
+  }
+  if (sawUnterminatedCandidate) {
+    return {
+      ok: false,
+      error: { code: "UNTERMINATED_JSON", message: "JSON object or array was not terminated" },
     };
   }
   return {

@@ -5,7 +5,7 @@ import { questionsById } from "@/lib/mock/feed-fixtures";
 
 export default async function Feed2AnswerPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const item = questionsById[id];
+  const item = questionsById.get(id);
 
   if (!item) notFound();
 
