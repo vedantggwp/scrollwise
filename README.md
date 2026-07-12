@@ -2,7 +2,9 @@
 
 **Your books, one feed. Read where you left off.**
 
-Scrollwise is a personal reading app that turns your EPUB and PDF library into a discovery-style feed of highlights—then lets you open any book and read in place, with your position and annotations saved. No cloud lock-in: everything runs in the browser and lives in your IndexedDB and local storage.
+Scrollwise is a personal reading app that turns your EPUB and PDF library into a discovery-style feed of highlights, then lets you open any book and read in place, with your position and annotations saved. The v1 app runs entirely in the browser (IndexedDB and local storage).
+
+> **v2 in progress:** Scrollwise is being rebuilt around a cloud RAG architecture — a Pinterest-style feed of questions generated from your own library, answered with cited passages. Direction and decisions: [docs/V2_BRIEF.md](docs/V2_BRIEF.md) · system design: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · visual system: [docs/BRAND.md](docs/BRAND.md). The v1 description below still reflects the current runnable app.
 
 ---
 
@@ -76,13 +78,11 @@ Scrollwise/
 **Requirements:** Node 18+ (or as required by Next.js 16).
 
 ```bash
-git clone https://github.com/<your-username>/scrollwise.git
+git clone https://github.com/vedantggwp/scrollwise.git
 cd scrollwise
 npm install
 npm run dev
 ```
-
-Replace `<your-username>` with your GitHub username. After pushing to your own repo, replace `your-org` in the comparison URLs at the bottom of `CHANGELOG.md` with your username so the version links work.
 
 Open [http://localhost:3000](http://localhost:3000). With no books, the app redirects to Library. Drop an EPUB or PDF to see upload → processing → feed → reader flow.
 

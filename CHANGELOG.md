@@ -155,12 +155,11 @@ All notable changes to Scrollwise are documented here. The format is based on [K
 - `docs/BUGS.md`: B1 and B2 marked FIXED with short fix notes.
 - Added project conventions for versioning and documentation updates (see README and docs).
 
-<!-- Replace your-org with your GitHub username so the version comparison links work. -->
 
-[Unreleased]: https://github.com/your-org/scrollwise/compare/v0.2.2...HEAD
-[0.2.2]: https://github.com/your-org/scrollwise/compare/v0.2.1...v0.2.2
-[0.2.1]: https://github.com/your-org/scrollwise/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/your-org/scrollwise/compare/v0.1.3...v0.2.0
-[0.1.3]: https://github.com/your-org/scrollwise/compare/v0.1.2...v0.1.3
-[0.1.2]: https://github.com/your-org/scrollwise/compare/v0.1.1...v0.1.2
-[0.1.1]: https://github.com/your-org/scrollwise/compare/v0.1.0...v0.1.1
+[Unreleased]: https://github.com/vedantggwp/scrollwise/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/vedantggwp/scrollwise/compare/v0.2.1...v0.2.2
+[0.2.1]: https://github.com/vedantggwp/scrollwise/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/vedantggwp/scrollwise/compare/v0.1.3...v0.2.0
+[0.1.3]: https://github.com/vedantggwp/scrollwise/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/vedantggwp/scrollwise/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/vedantggwp/scrollwise/compare/v0.1.0...v0.1.1

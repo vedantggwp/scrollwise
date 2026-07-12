@@ -29,8 +29,9 @@
 .DS_Store
 *.pem
 
-# IDE / editor (optional: remove this line to commit project rules)
+# IDE / editor / local agent tooling
 .cursor/
+.claude/
 
 # debug
 npm-debug.log*
