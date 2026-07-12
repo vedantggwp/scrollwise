@@ -9,6 +9,9 @@ export default defineConfig({
     globals: false,
     setupFiles: ["./tests/setup.ts"],
     include: ["**/*.test.{ts,tsx}"],
+    // Fixture-heavy ingestion tests parse whole books; they time out at the
+    // 15s default when the machine is under load (dev server + browser).
+    testTimeout: 60_000,
   },
   resolve: {
     alias: { "@": path.resolve(__dirname, ".") },

@@ -7,7 +7,7 @@ export function AnswerCard({ item }: { item: QuestionFixture }) {
       <p className="feed2-kicker">From {item.book.title}</p>
       <h1 className="feed2-answer-question">{item.generated.question}</h1>
       <p className="feed2-answer-body">{item.answer.answer}</p>
-      <div className="feed2-cited-passages" aria-label="Supporting passages">
+      <section className="feed2-cited-passages" aria-label="Supporting passages">
         {item.citations.map((citation) => (
           <blockquote
             className="feed2-cited-passage"
@@ -17,12 +17,12 @@ export function AnswerCard({ item }: { item: QuestionFixture }) {
             <cite>{citation.chunk.breadcrumb}</cite>
           </blockquote>
         ))}
-      </div>
-      <div className="feed2-citations" aria-label="Sources">
+      </section>
+      <section className="feed2-citations" aria-label="Sources">
         {item.citations.map((citation) => (
           <CitationChip key={`${citation.chunk.bookRef}-${citation.chunk.charOffsets.start}`} citation={citation} />
         ))}
-      </div>
+      </section>
     </article>
   );
 }

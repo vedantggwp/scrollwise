@@ -19,6 +19,10 @@ function chapterKey(chunk: BookChunk): string {
   return `${chunk.bookRef}\u0000${chunk.chapterIndex}`;
 }
 
+function normalizedExcerpt(excerpt: string): string {
+  return excerpt.replace(/\s+/g, " ").trim().toLowerCase();
+}
+
 function compareChunks(left: ScoredChunk, right: ScoredChunk): number {
   return right.score - left.score
     || lexicalCompare(left.chunk.bookRef, right.chunk.bookRef)
@@ -53,14 +57,17 @@ export function selectQuoteTiles(chunks: readonly BookChunk[], count: number): Q
   const perChapterLimit = Math.ceil(requested / chapterCount);
   const selected: QuoteTile[] = [];
   const selectedByChapter = new Map<string, number>();
+  const selectedExcerpts = new Set<string>();
 
   for (const item of ranked) {
     if (selected.length === requested) break;
     const key = chapterKey(item.chunk);
     const used = selectedByChapter.get(key) ?? 0;
-    if (used >= perChapterLimit) continue;
+    const excerpt = normalizedExcerpt(item.excerpt);
+    if (used >= perChapterLimit || selectedExcerpts.has(excerpt)) continue;
     selected.push({ chunk: item.chunk, excerpt: item.excerpt });
     selectedByChapter.set(key, used + 1);
+    selectedExcerpts.add(excerpt);
   }
   return selected;
 }

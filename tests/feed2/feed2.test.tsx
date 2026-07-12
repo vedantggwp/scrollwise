@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { AnswerCard } from "@/components/feed2/AnswerCard";
@@ -5,6 +7,7 @@ import { CoverTile } from "@/components/feed2/CoverTile";
 import { MasonryGrid } from "@/components/feed2/MasonryGrid";
 import { QuestionTile } from "@/components/feed2/QuestionTile";
 import { QuoteTile } from "@/components/feed2/QuoteTile";
+import Feed2Layout from "@/app/feed2/layout";
 import {
   BOOK_COLORS,
   bookColorForIndex,
@@ -21,17 +24,17 @@ const cover = feedFixtures.find((item): item is CoverFixture => item.kind === "c
 
 describe("feed2 components", () => {
   it("renders question, quote, and cover tiles from fixture props", () => {
-    const { unmount } = render(<QuestionTile item={question} />);
+    const questionRender = render(<QuestionTile item={question} />);
     expect(screen.getByRole("link", { name: /read answer/i })).toHaveAttribute(
       "href",
       `/feed2/answer/${question.id}`,
     );
     expect(screen.getByText(question.generated.hook)).toBeInTheDocument();
-    unmount();
+    questionRender.unmount();
 
-    render(<QuoteTile item={quote} />);
+    const quoteRender = render(<QuoteTile item={quote} />);
     expect(screen.getByText(quote.chunk.rawText, { exact: false })).toBeInTheDocument();
-    unmount();
+    quoteRender.unmount();
 
     render(<CoverTile item={cover} />);
     expect(screen.getByRole("link", { name: new RegExp(`open ${cover.book.title}`, "i") })).toBeInTheDocument();
@@ -49,7 +52,40 @@ describe("feed2 components", () => {
 
   it("renders every fixture in the masonry grid", () => {
     render(<MasonryGrid items={feedFixtures} />);
-    expect(screen.getByLabelText("Curiosity feed").children).toHaveLength(feedFixtures.length);
+    const feed = screen.getByRole("feed", { name: "Curiosity feed" });
+    expect(feed.querySelectorAll(".feed2-masonry--2 .feed2-masonry-item"))
+      .toHaveLength(feedFixtures.length);
+  });
+
+  it("uses stylesheet precedence so the feed font stylesheet is deduplicated", async () => {
+    render(<Feed2Layout>Content</Feed2Layout>);
+    const links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    expect(links).toHaveLength(1);
+    await expect(readFile("app/feed2/layout.tsx", "utf8"))
+      .resolves.toContain('precedence="default"');
+  });
+
+  it("caps entry delays and lays desktop feed items out row first", () => {
+    const items = Array.from({ length: 14 }, (_, index) => ({
+      ...feedFixtures[index % feedFixtures.length],
+      id: `tile-${index + 1}`,
+    }));
+    const { container, rerender } = render(<MasonryGrid items={items.slice(0, 8)} />);
+    const columns = [...container.querySelectorAll<HTMLElement>(".feed2-masonry--4 .feed2-masonry-column")];
+
+    expect(columns).toHaveLength(4);
+    expect(columns.map((column) => column.firstElementChild?.getAttribute("data-feed-id")))
+      .toEqual(["tile-1", "tile-2", "tile-3", "tile-4"]);
+    rerender(<MasonryGrid items={items} />);
+    expect(container.querySelector('[data-feed-id="tile-14"]'))
+      .toHaveStyle({ animationDelay: "480ms" });
+  });
+
+  it("disables delayed masonry animations for reduced motion", async () => {
+    const css = await readFile("app/globals.css", "utf8");
+
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.feed2-masonry-item[\s\S]*?animation:\s*none[\s\S]*?animation-delay:\s*0s/);
   });
 
   it("renders cited passages above short reader-link chips", () => {
@@ -57,7 +93,7 @@ describe("feed2 components", () => {
       (item): item is QuestionFixture => item.kind === "question" && item.citations.length === 2,
     )!;
     render(<AnswerCard item={twoCitationQuestion} />);
-    const passages = screen.getByLabelText("Supporting passages");
+    const passages = screen.getByRole("region", { name: "Supporting passages" });
     expect(passages.querySelectorAll("blockquote")).toHaveLength(2);
     expect(passages).toHaveTextContent(twoCitationQuestion.citations[0].quote);
 

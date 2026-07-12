@@ -87,6 +87,14 @@ describe("parseModelJson", () => {
     expect(objectResult.ok).toBe(true);
   });
 
+  it.each([
+    "Note: when cost { rises. Final: {\"value\":\"x\"}",
+    "Given {x: 1, y: {\"value\":\"x\"}} above",
+  ])("finds valid JSON after an earlier malformed brace candidate", (rawText) => {
+    expect(parseModelJson(z.object({ value: z.string() }), rawText))
+      .toEqual({ ok: true, data: { value: "x" } });
+  });
+
   it("returns typed extraction and syntax errors", async () => {
     const unterminated = parseModelJson(QuestionGenOutputSchema, await fixture("malformed-json.txt"));
     const invalid = parseModelJson(

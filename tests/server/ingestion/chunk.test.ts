@@ -63,20 +63,21 @@ describe("chunkBook", () => {
     }
   }, 15_000);
 
-  it("deduplicates a chapter title repeated as its first section heading", () => {
+  it("creates literal breadcrumbs for a hand-built two-level section", () => {
     const chunks = chunkBook({
       metadata: { title: "Example Book", author: "Example Author" },
       chapters: [{
-        title: "Same Chapter",
+        title: "Chapter One",
         blocks: [
-          { type: "heading", level: 1, text: "Same Chapter" },
+          { type: "heading", level: 1, text: "Part One" },
+          { type: "heading", level: 2, text: "Detail" },
           { type: "paragraph", text: "A complete paragraph worth preserving." },
         ],
       }],
     }, { bookRef: "example", minTokens: 1 });
 
     expect(chunks).toHaveLength(1);
-    expect(chunks[0].sectionPath).toEqual(["Same Chapter"]);
-    expect(chunks[0].breadcrumb).toBe("Example Book › Same Chapter");
+    expect(chunks[0].sectionPath).toEqual(["Part One", "Detail"]);
+    expect(chunks[0].breadcrumb).toBe("Example Book › Chapter One › Part One › Detail");
   });
 });

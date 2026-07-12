@@ -7,6 +7,9 @@ const IDEAL_CHARS = 220;
 const MAX_SENTENCES = 3;
 const VALID_START = /^(?:\p{Lu}|["'“‘])/u;
 const TERMINAL_END = /[.!?…]["'’”]?$/u;
+const ABBREVIATION = /\b(?:Mr|Mrs|Ms|Dr|St|Prof|Sr|Jr|e\.g|i\.e|etc|vs)\./giu;
+const ABBREVIATION_END = /\b(?:Mr|Mrs|Ms|Dr|St|Prof|Sr|Jr|e\.g|i\.e|etc|vs)\.["'’”]?$/iu;
+const PROTECTED_PERIOD = "\uE000";
 
 export interface QuoteTile {
   chunk: BookChunk;
@@ -30,13 +33,20 @@ function normalizeWhitespace(text: string): string {
 }
 
 function sentencesFromParagraph(paragraph: string, labels: Set<string>): Sentence[] {
-  const matches = paragraph.match(/[^.!?…]+(?:[.!?]+|…)["'’”]?/gu) ?? [];
+  const protectedParagraph = paragraph.replace(
+    ABBREVIATION,
+    (abbreviation) => `${abbreviation.slice(0, -1)}${PROTECTED_PERIOD}`,
+  );
+  const matches = protectedParagraph.match(/[^.!?…]+(?:[.!?]+|…)["'’”]?/gu) ?? [];
   return matches.map((match) => {
-    const text = normalizeWhitespace(match);
+    const text = normalizeWhitespace(match.replaceAll(PROTECTED_PERIOD, "."));
     const labelText = text.replace(/[.!?…]["'’”]?$/u, "").trim().toLowerCase();
     return {
       text,
-      valid: VALID_START.test(text) && TERMINAL_END.test(text) && !labels.has(labelText),
+      valid: VALID_START.test(text)
+        && TERMINAL_END.test(text)
+        && !ABBREVIATION_END.test(text)
+        && !labels.has(labelText),
     };
   });
 }
